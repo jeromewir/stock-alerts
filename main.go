@@ -33,6 +33,7 @@ func main() {
 		stockparsers.NewAmazonParser(),
 		stockparsers.NewAuchanParser(),
 		stockparsers.NewCDiscountParser(),
+		stockparsers.NewCarrefourParser(),
 	}
 
 	jobs := make(chan Job, len(parsers))
