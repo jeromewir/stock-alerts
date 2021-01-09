@@ -28,11 +28,12 @@ func main() {
 	messengerIDs := config.GetMessengerRecipientIDs()
 
 	ticker := time.NewTicker(5 * time.Minute)
-	parsers := make([]Parser, 0)
-
-	parsers = append(parsers, stockparsers.NewFnacParser())
-	parsers = append(parsers, stockparsers.NewAuchanParser())
-	parsers = append(parsers, stockparsers.NewCDiscountParser())
+	parsers := []Parser{
+		stockparsers.NewFnacParser(),
+		stockparsers.NewAmazonParser(),
+		stockparsers.NewAuchanParser(),
+		stockparsers.NewCDiscountParser(),
+	}
 
 	jobs := make(chan Job, len(parsers))
 
