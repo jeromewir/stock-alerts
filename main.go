@@ -96,8 +96,6 @@ func main() {
 		}
 	}
 
-	jobs <- Job{Parser: stockparsers.NewCDiscountParser()}
-
 	m.MessageReceived = mr
 
 	http.ListenAndServe(":5646", nil)

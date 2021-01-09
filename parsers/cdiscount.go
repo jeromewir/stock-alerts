@@ -1,7 +1,6 @@
 package parsers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/jeromewir/stockalerts/config"
@@ -64,11 +63,7 @@ func (p CDiscountParser) IsAvailable() (bool, error) {
 		return false, err
 	}
 
-	fmt.Println(doc.Html())
-
 	selection := doc.Find(".crUl>.crItem")
-
-	fmt.Println(selection.Length())
 
 	if selection.Length() != 1 {
 		return true, nil
