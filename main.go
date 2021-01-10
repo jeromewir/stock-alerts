@@ -46,6 +46,7 @@ func main() {
 		for {
 			select {
 			case <- ticker.C:
+				fmt.Println("Checking for availabilities")
 				for _, p := range parsers {
 					jobs <- Job{Parser: p}
 				}
@@ -56,10 +57,13 @@ func main() {
 
 				for _, mID := range messengerIDs {
 					if err != nil {
-						m.SendSimpleMessage(mID, fmt.Sprintf("Impossible de verifier les stocks: %s", err.Error()))
+						fmt.Println(job.Parser.GetName(), err)
+						m.SendSimpleMessage(mID, fmt.Sprintf("Impossible de verifier les stocks pour %s: %s", job.Parser.GetName(), err.Error()))
 			
 						return
 					}
+
+					fmt.Printf("%s: %t\n", job.Parser.GetName(), isAvailable)
 
 					if isAvailable == true {
 						m.SendSimpleMessage(mID, fmt.Sprintf("Duuuude, PS5 dispo chez %s! 🏃‍♂️\n%s", job.Parser.GetName(), job.Parser.GetURL()))
@@ -73,6 +77,8 @@ func main() {
 	http.HandleFunc("/webhook", m.Handler)
 
 	mr := func(event messenger.Event, opts messenger.MessageOpts, msg messenger.ReceivedMessage) {
+		fmt.Println(fmt.Sprintf("Received a message from %s: %s", opts.Sender.ID, msg.Text))
+
 		m.SendSimpleMessage(opts.Sender.ID, "Je verifie les dispos 👇")
 
 		for _, p := range parsers {
