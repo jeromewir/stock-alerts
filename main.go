@@ -35,6 +35,7 @@ func main() {
 		// Cdiscount actually needs a browser since it sets a cookie on first navigation with JS and then reload the page
 		// stockparsers.NewCDiscountParser(),
 		stockparsers.NewCarrefourParser(),
+		stockparsers.NewLeclercParser(),
 	}
 
 	jobs := make(chan Job, len(parsers))
