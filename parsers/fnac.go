@@ -1,9 +1,13 @@
 package parsers
 
 import (
+	"context"
 	"net/http"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/chromedp/cdproto/cdp"
+	"github.com/chromedp/chromedp"
 	"github.com/jeromewir/stockalerts/config"
 )
 
@@ -63,15 +67,41 @@ func (p FnacParser) getPage(url string) (*goquery.Document, error) {
 
 // IsAvailable check for PS5 availability
 func (p FnacParser) IsAvailable() (bool, error) {
-	document, err := p.getPage(p.URL)
+	chromeURL, err := getRemoteDebuggerURL()
 
 	if err != nil {
 		return false, err
 	}
 
-	selection := document.Find(".f-buyBox-infos>.f-buyBox-availabilityStatus-unavailable")
+	ctx, cancel := context.WithTimeout(context.Background(), 15 * time.Second)
 
-	if selection.Length() != 2 {
+	defer cancel()
+
+	// create allocator context for use with creating a browser context later
+	allocatorContext, cancel := chromedp.NewRemoteAllocator(ctx, chromeURL)
+	defer cancel()
+
+	// create context
+	ctxt, cancel := chromedp.NewContext(allocatorContext)
+	defer cancel()
+
+	// run task list
+	var nodes []*cdp.Node
+	if err := chromedp.Run(ctxt,
+		chromedp.Navigate(p.URL),
+		chromedp.WaitVisible(".f-productHeader-Title"),
+		chromedp.Nodes(`.f-buyBox-infos>.f-buyBox-availabilityStatus-unavailable`, &nodes, chromedp.ByQuery),
+	); err != nil {
+		ctxt.Done()
+		allocatorContext.Done()
+
+		return false, err
+	}
+
+	ctxt.Done()
+	allocatorContext.Done()
+
+	if len(nodes) != 2 {
 		return true, nil
 	}
 
