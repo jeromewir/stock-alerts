@@ -79,7 +79,11 @@ func main() {
 	mr := func(event messenger.Event, opts messenger.MessageOpts, msg messenger.ReceivedMessage) {
 		fmt.Println(fmt.Sprintf("Received a message from %s: %s", opts.Sender.ID, msg.Text))
 
-		m.SendSimpleMessage(opts.Sender.ID, "Je verifie les dispos 👇")
+		_, err := m.SendSimpleMessage(opts.Sender.ID, "Je verifie les dispos 👇")
+
+		if err != nil {
+			fmt.Println(err)
+		}
 
 		for _, p := range parsers {
 			go func(p Parser) {
