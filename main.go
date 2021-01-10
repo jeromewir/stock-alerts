@@ -13,13 +13,9 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
+	_ = godotenv.Load()
 
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = config.ReadFromEnvironment()
+	err := config.ReadFromEnvironment()
 
 	if err != nil {
 		log.Fatal(err)
