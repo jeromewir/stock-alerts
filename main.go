@@ -27,6 +27,8 @@ func main() {
 	parsers := []Parser{
 		stockparsers.NewFnacParser(),
 		stockparsers.NewAmazonParser(),
+		stockparsers.NewAmazonESParser(),
+		stockparsers.NewAmazonDEParser(),
 		stockparsers.NewAuchanParser(),
 		// Cdiscount actually needs a browser since it sets a cookie on first navigation with JS and then reload the page
 		// stockparsers.NewCDiscountParser(),
