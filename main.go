@@ -55,22 +55,24 @@ func main() {
 
 				break
 			case job := <- jobs:
-				isAvailable, err := job.Parser.IsAvailable()
+				go func(job Job) {
+					isAvailable, err := job.Parser.IsAvailable()
 
-				for _, mID := range messengerIDs {
-					if err != nil {
-						fmt.Println(job.Parser.GetName(), err)
-						m.SendSimpleMessage(mID, fmt.Sprintf("Impossible de verifier les stocks pour %s: %s", job.Parser.GetName(), err.Error()))
-			
-						return
+					for _, mID := range messengerIDs {
+						if err != nil {
+							fmt.Println(job.Parser.GetName(), err)
+							m.SendSimpleMessage(mID, fmt.Sprintf("Impossible de verifier les stocks pour %s: %s", job.Parser.GetName(), err.Error()))
+				
+							return
+						}
+	
+						fmt.Printf("%s: %t\n", job.Parser.GetName(), isAvailable)
+	
+						if isAvailable == true {
+							m.SendSimpleMessage(mID, fmt.Sprintf("Duuuude, PS5 dispo chez %s! 🏃‍♂️\n%s", job.Parser.GetName(), job.Parser.GetURL()))
+						}
 					}
-
-					fmt.Printf("%s: %t\n", job.Parser.GetName(), isAvailable)
-
-					if isAvailable == true {
-						m.SendSimpleMessage(mID, fmt.Sprintf("Duuuude, PS5 dispo chez %s! 🏃‍♂️\n%s", job.Parser.GetName(), job.Parser.GetURL()))
-					}
-				}
+				}(job)
 				break
 			}
 		}
@@ -92,7 +94,7 @@ func main() {
 				isAvailable, err := p.IsAvailable()
 
 				if err != nil {
-					m.SendSimpleMessage(opts.Sender.ID, fmt.Sprintf("Impossible de verifier les stocks: %s", err.Error()))
+					m.SendSimpleMessage(opts.Sender.ID, fmt.Sprintf("Impossible de verifier les stocks pour %s: %s", p.GetName(), err.Error()))
 		
 					return
 				}
