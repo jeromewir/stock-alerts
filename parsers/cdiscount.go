@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net"
 	"net/http"
 
@@ -53,18 +54,15 @@ func (p CDiscountParser) getRemoteDebuggerURL() (string, error) {
 	chromeHost := config.GetChromeHost()
 	chromePort := config.GetChromePort()
 
-	ips, err := net.LookupIP(chromeHost)
-
-	if err != nil {
-		return "", err
-	}
+	// https://github.com/skalfyfan/dockerized-puppeteer/commit/d31b2243ad1b22904bfa2f9f91ac075a3da0511a
+	ips, _ := net.LookupIP(chromeHost)
 
 	if len(ips) > 0 {
+		// If we don't have ips or there is an error, we rely on the provided host
 		chromeHost = ips[0].String()
 	}
 
-	fmt.Println(ips[0])
-
+	// Get webSocket URL
 	resp, err := http.Get(fmt.Sprintf("http://%s:%s/json/version", chromeHost, chromePort))
 
 	if err != nil {
@@ -74,7 +72,8 @@ func (p CDiscountParser) getRemoteDebuggerURL() (string, error) {
 	if resp.StatusCode != 200 {
 		d, _ := ioutil.ReadAll(resp.Body)
 
-		fmt.Println(string(d))
+		// Print the JSON body, is there something bad with the chrome headless ?
+		log.Println(string(d))
 		return "", fmt.Errorf("Expected successful status code while fetching remote debugger, got %d", resp.StatusCode)
 	}
 
