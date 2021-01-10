@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  stockalerts:
+    build: .
+    ports:
+      - "5646:5646"
+    environment:
+      - MESSENGER_ACCESS_TOKEN=
+      - MESSENGER_VERIFY_TOKEN=
+      - FNAC_COOKIE=
+      - MESSENGER_RECIPIENT_IDS=
+      - CHROME_HOST=headless
+      - CHROME_PORT=9222
+  headless:
+    image: chromedp/headless-shell:89.0.4381.8
+    ports:
+      - 9222:9222
