@@ -6,6 +6,8 @@ var (
 	fnacCookie string
 	cDiscountCookie string
 	messengerRecipientIDs []string
+	chromeHost string
+	chromePort string
 )
 
 // GetMessengerAccessToken returns the access token used to interact with messenger API
@@ -31,4 +33,14 @@ func GetMessengerRecipientIDs() []string {
 // GetCDiscountCookie returns the cookie needed to access the page
 func GetCDiscountCookie() string {
 	return cDiscountCookie
+}
+
+// GetChromeHost returns the host for the headless browser
+func GetChromeHost() string {
+	return chromeHost
+}
+
+// GetChromePort returns the host for the headless browser
+func GetChromePort() string {
+	return chromePort
 }

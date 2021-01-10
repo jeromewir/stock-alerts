@@ -24,14 +24,14 @@ func main() {
 	messengerIDs := config.GetMessengerRecipientIDs()
 
 	ticker := time.NewTicker(5 * time.Minute)
+
 	parsers := []Parser{
 		stockparsers.NewFnacParser(),
 		stockparsers.NewAmazonParser(),
 		stockparsers.NewAmazonESParser(),
 		stockparsers.NewAmazonDEParser(),
 		stockparsers.NewAuchanParser(),
-		// Cdiscount actually needs a browser since it sets a cookie on first navigation with JS and then reload the page
-		// stockparsers.NewCDiscountParser(),
+		stockparsers.NewCDiscountParser(),
 		stockparsers.NewCarrefourParser(),
 		stockparsers.NewLeclercParser(),
 	}
