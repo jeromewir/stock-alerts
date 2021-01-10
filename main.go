@@ -104,5 +104,11 @@ func main() {
 
 	m.MessageReceived = mr
 
+	http.HandleFunc("/", func (res http.ResponseWriter, req *http.Request) {
+		res.Header().Set("content-type", "application/json")
+		res.WriteHeader(200)
+		res.Write([]byte("{\"message\": \"ok\"}"))
+	})
+
 	http.ListenAndServe(":5646", nil)
 }
