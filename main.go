@@ -26,7 +26,7 @@ func main() {
 	ticker := time.NewTicker(5 * time.Minute)
 
 	parsers := []Parser{
-		stockparsers.NewFnacParser(),
+		// stockparsers.NewFnacParser(),
 		stockparsers.NewAmazonParser(),
 		stockparsers.NewAmazonESParser(),
 		stockparsers.NewAmazonDEParser(),
