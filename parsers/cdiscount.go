@@ -54,12 +54,14 @@ func (p CDiscountParser) getRemoteDebuggerURL() (string, error) {
 	chromeHost := config.GetChromeHost()
 	chromePort := config.GetChromePort()
 
-	// https://github.com/skalfyfan/dockerized-puppeteer/commit/d31b2243ad1b22904bfa2f9f91ac075a3da0511a
-	ips, _ := net.LookupIP(chromeHost)
+	if chromeHost != "localhost" {
+		// https://github.com/skalfyfan/dockerized-puppeteer/commit/d31b2243ad1b22904bfa2f9f91ac075a3da0511a
+		ips, _ := net.LookupIP(chromeHost)
 
-	if len(ips) > 0 {
-		// If we don't have ips or there is an error, we rely on the provided host
-		chromeHost = ips[0].String()
+		if len(ips) > 0 {
+			// If we don't have ips or there is an error, we rely on the provided host
+			chromeHost = ips[0].String()
+		}
 	}
 
 	// Get webSocket URL
@@ -115,8 +117,14 @@ func (p CDiscountParser) IsAvailable() (bool, error) {
 		chromedp.WaitVisible(".prdBlocContainer"),
 		chromedp.Nodes(`.crUl>.crItem`, &nodes, chromedp.ByQuery),
 	); err != nil {
+		ctxt.Done()
+		allocatorContext.Done()
+
 		return false, err
 	}
+
+	ctxt.Done()
+	allocatorContext.Done()
 
 	if len(nodes) != 1 {
 		return true, nil
