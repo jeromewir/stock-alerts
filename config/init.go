@@ -14,6 +14,8 @@ func ReadFromEnvironment() error {
 	fnacCookie = os.Getenv("COOKIE_FNAC")
 	cDiscountCookie = os.Getenv("CDISCOUNT_COOKIE")
 	messengerRecipientS := os.Getenv("MESSENGER_RECIPIENT_IDS")
+	chromeHost = os.Getenv("CHROME_HOST")
+	chromePort = os.Getenv("CHROME_PORT")
 
 	messengerRecipientIDs = strings.Split(messengerRecipientS, ",")
 
@@ -27,6 +29,14 @@ func ReadFromEnvironment() error {
 
 	if messengerVerifyToken == "" {
 		return errors.New("Expected MESSENGER_VERIFY_TOKEN defined in environment")
+	}
+
+	if chromeHost == "" {
+		return errors.New("Expected CHROME_HOST defined in environment")
+	}
+	
+	if chromePort == "" {
+		return errors.New("Expected CHROME_PORT defined in environment")
 	}
 
 	return nil

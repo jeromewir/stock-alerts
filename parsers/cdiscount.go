@@ -1,8 +1,16 @@
 package parsers
 
 import (
+	"context"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io/ioutil"
+	"net"
 	"net/http"
 
+	"github.com/chromedp/cdproto/cdp"
+	"github.com/chromedp/chromedp"
 	"github.com/jeromewir/stockalerts/config"
 )
 
@@ -11,6 +19,10 @@ type CDiscountParser struct {
 	Name string
 	URL string
 	shortURL string
+}
+
+type chromeHostJSONVersionResponseBody struct {
+	WebSocketDebuggerURL string `json:"webSocketDebuggerUrl"`
 }
 
 // NewCDiscountParser returns a new instance of fnac parser
@@ -37,35 +49,77 @@ func (p CDiscountParser) GetShortURL() string {
 	return p.shortURL
 }
 
+func (p CDiscountParser) getRemoteDebuggerURL() (string, error) {
+	chromeHost := config.GetChromeHost()
+	chromePort := config.GetChromePort()
+
+	ips, err := net.LookupIP(chromeHost)
+
+	if err != nil {
+		return "", err
+	}
+
+	if len(ips) > 0 {
+		chromeHost = ips[0].String()
+	}
+
+	fmt.Println(ips[0])
+
+	resp, err := http.Get(fmt.Sprintf("http://%s:%s/json/version", chromeHost, chromePort))
+
+	if err != nil {
+		return "", err
+	}
+
+	if resp.StatusCode != 200 {
+		d, _ := ioutil.ReadAll(resp.Body)
+
+		fmt.Println(string(d))
+		return "", fmt.Errorf("Expected successful status code while fetching remote debugger, got %d", resp.StatusCode)
+	}
+
+	var jsonRes chromeHostJSONVersionResponseBody
+
+	if err := json.NewDecoder(resp.Body).Decode(&jsonRes); err != nil {
+		return "", err
+	}
+
+	webSocketDebuggerURL := jsonRes.WebSocketDebuggerURL
+
+	if webSocketDebuggerURL == "" {
+		return "", errors.New("Expected webSocketDebuggerUrl in /json/version response")
+	}
+
+	return webSocketDebuggerURL, nil
+}
+
 // IsAvailable check for PS5 availability
 func (p CDiscountParser) IsAvailable() (bool, error) {
-	req, err := http.NewRequest("GET", p.URL, nil)
-
-	req.Header.Set("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
-	req.Header.Set("referer", "https://www.cdiscount.com/jeux-pc-video-console/ps5/console-ps5/l-1035001.html")
-	req.Header.Set("cache-control", "max-age=0")
-	req.Header.Set("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.101 Safari/537.36")
-	req.Header.Set("accept-language", "en-US,en;q=0.9")
-	req.Header.Set("sec-fetch-dest", "document")
-	req.Header.Set("sec-fetch-mode", "navigate")
-	req.Header.Set("sec-fetch-site", "same-origin")
-	req.Header.Set("sec-gpc", "1")
-	 req.Header.Set("sec-fetch-user", "?1")
-	 req.Header.Set("cookie", config.GetCDiscountCookie())
+	chromeURL, err := p.getRemoteDebuggerURL()
 
 	if err != nil {
 		return false, err
 	}
 
-	doc, err := getDocument(req)
+	// create allocator context for use with creating a browser context later
+	allocatorContext, cancel := chromedp.NewRemoteAllocator(context.Background(), chromeURL)
+	defer cancel()
 
-	if err != nil {
+	// create context
+	ctxt, cancel := chromedp.NewContext(allocatorContext)
+	defer cancel()
+
+	// run task list
+	var nodes []*cdp.Node
+	if err := chromedp.Run(ctxt,
+		chromedp.Navigate(p.URL),
+		chromedp.WaitVisible(".prdBlocContainer"),
+		chromedp.Nodes(`.crUl>.crItem`, &nodes, chromedp.ByQuery),
+	); err != nil {
 		return false, err
 	}
 
-	selection := doc.Find(".crUl>.crItem")
-
-	if selection.Length() != 1 {
+	if len(nodes) != 1 {
 		return true, nil
 	}
 
