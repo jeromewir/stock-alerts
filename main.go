@@ -27,9 +27,10 @@ func main() {
 
 	parsers := []Parser{
 		// stockparsers.NewFnacParser(),
-		stockparsers.NewAmazonParser(),
+		stockparsers.NewAmazonFRParser(),
 		stockparsers.NewAmazonESParser(),
 		stockparsers.NewAmazonDEParser(),
+		stockparsers.NewAmazonCOUKParser(),
 		stockparsers.NewAuchanParser(),
 		stockparsers.NewCDiscountParser(),
 		stockparsers.NewCarrefourParser(),

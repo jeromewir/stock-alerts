@@ -6,38 +6,38 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-// AmazonParser holds the informations needed to scrap fnac
-type AmazonParser struct {
+// AmazonCOUKParser holds the informations needed to scrap fnac
+type AmazonCOUKParser struct {
 	Name string
 	URL string
 	shortURL string
 }
 
-// NewAmazonParser returns a new instance of fnac parser
-func NewAmazonParser() AmazonParser {
-	return AmazonParser{
-		Name: "Amazon",
-		URL: "https://www.amazon.fr/dp/B08H93ZRK9/ref=twister_B08HJZNMF3?_encoding=UTF8&th=1",
-		shortURL: "https://cutt.ly/qjzsNUR",
+// NewAmazonCOUKParser returns a new instance of fnac parser
+func NewAmazonCOUKParser() AmazonCOUKParser {
+	return AmazonCOUKParser{
+		Name: "Amazon UK",
+		URL: "https://www.amazon.co.uk/PlayStation-9395003-5-Console/dp/B08H95Y452/ref=sr_1_1?dchild=1&keywords=ps5&qid=1610473820&sr=8-1",
+		shortURL: "https://cutt.ly/ijbThkH",
 	}
 }
 
 // GetName returns the name of the scraper
-func (p AmazonParser) GetName() string {
+func (p AmazonCOUKParser) GetName() string {
 	return p.Name
 }
 
 // GetURL returns the url of the scraper
-func (p AmazonParser) GetURL() string {
+func (p AmazonCOUKParser) GetURL() string {
 	return p.URL
 }
 
 // GetShortURL returns the short URL used for display
-func (p AmazonParser) GetShortURL() string {
+func (p AmazonCOUKParser) GetShortURL() string {
 	return p.shortURL
 }
 
-func (p AmazonParser) getPage(url string) (*goquery.Document, error) {
+func (p AmazonCOUKParser) getPage(url string) (*goquery.Document, error) {
 	req, err := http.NewRequest("GET", url, nil)
 
 	if err != nil {
@@ -49,7 +49,7 @@ func (p AmazonParser) getPage(url string) (*goquery.Document, error) {
 }
 
 // IsAvailable check for PS5 availability
-func (p AmazonParser) IsAvailable() (bool, error) {
+func (p AmazonCOUKParser) IsAvailable() (bool, error) {
 	document, err := p.getPage(p.URL)
 
   if err != nil {
