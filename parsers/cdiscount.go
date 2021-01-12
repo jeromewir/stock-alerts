@@ -2,6 +2,7 @@ package parsers
 
 import (
 	"context"
+	"time"
 
 	"github.com/chromedp/cdproto/cdp"
 	"github.com/chromedp/chromedp"
@@ -50,8 +51,12 @@ func (p CDiscountParser) IsAvailable() (bool, error) {
 		return false, err
 	}
 
+	ctx, cancel := context.WithTimeout(context.Background(), 15 * time.Second)
+
+	defer cancel()
+
 	// create allocator context for use with creating a browser context later
-	allocatorContext, cancel := chromedp.NewRemoteAllocator(context.Background(), chromeURL)
+	allocatorContext, cancel := chromedp.NewRemoteAllocator(ctx, chromeURL)
 	defer cancel()
 
 	// create context

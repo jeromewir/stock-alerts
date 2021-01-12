@@ -59,6 +59,8 @@ func getRemoteDebuggerURL() (string, error) {
 		return "", err
 	}
 
+	defer resp.Body.Close()
+
 	if resp.StatusCode != 200 {
 		d, _ := ioutil.ReadAll(resp.Body)
 
