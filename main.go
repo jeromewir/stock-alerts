@@ -31,6 +31,7 @@ func main() {
 		stockparsers.NewAmazonESParser(),
 		stockparsers.NewAmazonDEParser(),
 		stockparsers.NewAmazonCOUKParser(),
+		stockparsers.NewAmazonITParser(),
 		stockparsers.NewAuchanParser(),
 		stockparsers.NewCDiscountParser(),
 		stockparsers.NewCarrefourParser(),
