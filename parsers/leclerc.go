@@ -83,7 +83,7 @@ func (p LeclercParser) parseResponse(body io.ReadCloser) (*productSearchResponse
 
 func (p LeclercParser) getJSON(baseURL string) (*productSearchResponse, error) {
 	requestBody, err := json.Marshal(productSearchRequestBody{
-		Categories: productSearchCategories{Code: []string{"NAVIGATION_playstation-5"}},
+		Categories: productSearchCategories{Code: []string{"NAVIGATION_consoles-ps5"}},
 		Language: "fr-FR",
 		Page: 1,
 		Size: 90,
@@ -115,15 +115,7 @@ func (p LeclercParser) IsAvailable() (bool, error) {
 		return false, err
 	}
 
-	consoleProducts := make([]leclercProduct, 0)
-
-	for _, item := range productResponse.Items {
-		if item.Family.Code == "consoles" {
-			consoleProducts = append(consoleProducts, item)
-		}
-	}
-
-	if len(consoleProducts) > 0 {
+	if len(productResponse.Items) > 0 {
 		return true, nil
 	}
 

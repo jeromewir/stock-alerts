@@ -124,7 +124,5 @@ func main() {
 		res.Write([]byte("{\"message\": \"ok\"}"))
 	})
 
-	jobs <- Job{Parser: stockparsers.NewMicromaniaParser()}
-
 	http.ListenAndServe(":5646", nil)
 }
