@@ -34,11 +34,12 @@ func main() {
 		stockparsers.NewAmazonITParser(),
 		stockparsers.NewAuchanParser(),
 		stockparsers.NewCDiscountParser(),
-		stockparsers.NewCarrefourParser(),
+		stockparsers.NewCarrefourPrecoParser(),
 		stockparsers.NewLeclercParser(),
 		// stockparsers.NewBoulangerParser(),
 		stockparsers.NewLDLCParser(),
 		stockparsers.NewMicromaniaParser(),
+		stockparsers.NewCarrefourParser(),
 	}
 
 

@@ -1,7 +1,6 @@
 package parsers
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/PuerkitoBio/goquery"
@@ -18,8 +17,8 @@ type CarrefourParser struct {
 func NewCarrefourParser() CarrefourParser {
 	return CarrefourParser{
 		Name: "Carrefour",
-		URL: "https://reservation.carrefour.fr/",
-		shortURL: "https://cutt.ly/AjzjXew",
+		URL: "https://jouetsdenoel.carrefour.fr/produit/jeux-video-et-multimedia/ps5-cons-ps5-standard",
+		shortURL: "https://cutt.ly/njmY4bf",
 	}
 }
 
@@ -57,21 +56,9 @@ func (p CarrefourParser) IsAvailable() (bool, error) {
     return false, err
 	}
 
-	sections := document.Find("section")
+	addToCartBtn := document.Find(".cm-product.js-product-detail .cm-pastille-container>a.product-add")
 
-	if sections.Length() != 5 {
-		return true, nil
-	}
-
-	previousCommandsSection := document.Find(".cm-section.cm-bg--gray-black.mts")
-
-	if previousCommandsSection.Length() != 1 {
-		return false, errors.New("Hum, looks like .cm-section.cm-bg--gray-black.mts is not present anymore")
-	}
-
-	previousCommandsRows := previousCommandsSection.Find("div.row")
-
-	if previousCommandsRows.Length() != 1 {
+	if addToCartBtn.Length() > 0 {
 		return true, nil
 	}
 
