@@ -19,7 +19,7 @@ type MicromaniaParser struct {
 func NewMicromaniaParser() MicromaniaParser {
 	return MicromaniaParser{
 		Name: "Micromania",
-		URL: "https://www.micromania.fr/playstation-5-105642.html?kwkuniv=P3CB056054B100-vba7ff38fls26tqw83xbumydgsq80-z0wnoqjf1h&utm_source=netaffiliation&utm_campaign=deeplinks",
+		URL: "https://www.micromania.fr/playstation-5-105642.html",
 		shortURL: "https://cutt.ly/djmTpks",
 	}
 }
