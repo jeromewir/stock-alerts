@@ -40,6 +40,7 @@ func main() {
 		stockparsers.NewLDLCParser(),
 		stockparsers.NewMicromaniaParser(),
 		stockparsers.NewCarrefourParser(),
+		stockparsers.NewPicwictoysParser(),
 	}
 
 
@@ -76,7 +77,7 @@ func main() {
 						fmt.Printf("%s: %t\n", job.Parser.GetName(), isAvailable)
 	
 						if isAvailable == true {
-							m.SendSimpleMessage(mID, fmt.Sprintf("Duuuude, PS5 dispo chez %s! 🏃‍♂️\n%s", job.Parser.GetName(), job.Parser.GetURL()))
+							m.SendSimpleMessage(mID, fmt.Sprintf("Duuuude, PS5 dispo chez %s! 🏃‍♂️\n%s", job.Parser.GetName(), job.Parser.GetShortURL()))
 						}
 					}
 				}(job)
