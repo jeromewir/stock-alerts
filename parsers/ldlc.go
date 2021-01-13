@@ -76,5 +76,5 @@ func (p LDLCParser) IsAvailable() (bool, error) {
 		return false, nil
 	}
 
-	return false, nil
+	return true, nil
 }

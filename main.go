@@ -38,7 +38,9 @@ func main() {
 		stockparsers.NewLeclercParser(),
 		// stockparsers.NewBoulangerParser(),
 		stockparsers.NewLDLCParser(),
+		stockparsers.NewMicromaniaParser(),
 	}
+
 
 	jobs := make(chan Job, len(parsers))
 
@@ -121,6 +123,8 @@ func main() {
 		res.WriteHeader(200)
 		res.Write([]byte("{\"message\": \"ok\"}"))
 	})
+
+	jobs <- Job{Parser: stockparsers.NewMicromaniaParser()}
 
 	http.ListenAndServe(":5646", nil)
 }
