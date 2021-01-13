@@ -36,7 +36,7 @@ func main() {
 		stockparsers.NewCDiscountParser(),
 		stockparsers.NewCarrefourParser(),
 		stockparsers.NewLeclercParser(),
-		stockparsers.NewBoulangerParser(),
+		// stockparsers.NewBoulangerParser(),
 		stockparsers.NewLDLCParser(),
 	}
 
