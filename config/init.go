@@ -2,7 +2,9 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -16,6 +18,7 @@ func ReadFromEnvironment() error {
 	messengerRecipientS := os.Getenv("MESSENGER_RECIPIENT_IDS")
 	chromeHost = os.Getenv("CHROME_HOST")
 	chromePort = os.Getenv("CHROME_PORT")
+	cronIntervalSecondsString := os.Getenv("CRON_INTERVAL_SECONDS")
 
 	messengerRecipientIDs = strings.Split(messengerRecipientS, ",")
 
@@ -37,6 +40,18 @@ func ReadFromEnvironment() error {
 	
 	if chromePort == "" {
 		return errors.New("Expected CHROME_PORT defined in environment")
+	}
+
+	if cronIntervalSecondsString != "" {
+		var err error
+		cronIntervalSeconds, err = strconv.Atoi(cronIntervalSecondsString)
+
+		if err != nil {
+			fmt.Println("Warning: `CRON_INTERVAL_SECONDS` is not a number, defaulting to 300 seconds")
+			cronIntervalSeconds = 300
+		}
+	} else {
+		cronIntervalSeconds = 300
 	}
 
 	return nil

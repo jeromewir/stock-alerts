@@ -23,7 +23,7 @@ func main() {
 
 	messengerIDs := config.GetMessengerRecipientIDs()
 
-	ticker := time.NewTicker(5 * time.Minute)
+	ticker := time.NewTicker(time.Duration(config.GetCronIntervalSeconds()) * time.Second)
 
 	parsers := []Parser{
 		// stockparsers.NewFnacParser(),
