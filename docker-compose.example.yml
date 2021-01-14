@@ -7,7 +7,6 @@ services:
     environment:
       - MESSENGER_ACCESS_TOKEN=
       - MESSENGER_VERIFY_TOKEN=
-      - FNAC_COOKIE=
       - MESSENGER_RECIPIENT_IDS=
       - CHROME_HOST=headless
       - CHROME_PORT=9222
