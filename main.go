@@ -39,7 +39,7 @@ func main() {
 		// stockparsers.NewBoulangerParser(),
 		stockparsers.NewLDLCParser(),
 		stockparsers.NewMicromaniaParser(),
-		stockparsers.NewCarrefourParser(),
+		// stockparsers.NewCarrefourParser(),
 		stockparsers.NewPicwictoysParser(),
 	}
 
