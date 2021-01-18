@@ -1,6 +1,7 @@
 package parsers
 
 import (
+	"fmt"
 	"net/http"
 )
 
@@ -43,6 +44,10 @@ func (p AuchanParser) IsAvailable() (bool, error) {
 	}
 
   defer res.Body.Close()
+
+	if res.StatusCode >= 500 {
+		return false, fmt.Errorf("Auchan's website is not available: %d", res.StatusCode)
+	}
 
 	if res.StatusCode == 404 {
 		return false, nil
