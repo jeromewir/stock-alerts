@@ -1,7 +1,7 @@
 package parsers
 
 import (
-	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/PuerkitoBio/goquery"
@@ -51,29 +51,54 @@ func (p CarrefourPrecoParser) getPage(url string) (*goquery.Document, error) {
 
 // IsAvailable check for PS5 availability
 func (p CarrefourPrecoParser) IsAvailable() (bool, error) {
-	document, err := p.getPage(p.URL)
-
-  if err != nil {
-    return false, err
+	// Check the redirection
+	req, err := http.NewRequest("GET", "https://reservation.carrefour.fr/produit/playstation-5/ps5-edition-standard", nil)
+	if err != nil {
+		return false, err
 	}
 
-	sections := document.Find("section")
+	client := new(http.Client)
+	client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
+		return http.ErrUseLastResponse
+	}
 
-	if sections.Length() != 5 {
+	response, err := client.Do(req)
+
+	if err != nil {
+		return false, err
+	}
+
+	if response.StatusCode >= 500 {
+		return false, fmt.Errorf("Carrefour's website is not available: %d", response.StatusCode)
+	}
+
+	if response.StatusCode != 302 {
 		return true, nil
 	}
 
-	previousCommandsSection := document.Find(".cm-section.cm-bg--gray-black.mts")
+	// document, err := p.getPage(p.URL)
 
-	if previousCommandsSection.Length() != 1 {
-		return false, errors.New("Hum, looks like .cm-section.cm-bg--gray-black.mts is not present anymore")
-	}
+  // if err != nil {
+  //   return false, err
+	// }
 
-	previousCommandsRows := previousCommandsSection.Find("div.row")
+	// sections := document.Find("section")
 
-	if previousCommandsRows.Length() != 1 {
-		return true, nil
-	}
+	// if sections.Length() != 5 {
+	// 	return true, nil
+	// }
+
+	// previousCommandsSection := document.Find(".cm-section.cm-bg--gray-black.mts")
+
+	// if previousCommandsSection.Length() != 1 {
+	// 	return false, errors.New("Hum, looks like .cm-section.cm-bg--gray-black.mts is not present anymore")
+	// }
+
+	// previousCommandsRows := previousCommandsSection.Find("div.row")
+
+	// if previousCommandsRows.Length() != 1 {
+	// 	return true, nil
+	// }
 
 	return false, nil
 }
