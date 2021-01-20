@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/chromedp/cdproto/cdp"
 	"github.com/chromedp/chromedp"
 )
 
@@ -23,8 +22,8 @@ type chromeHostJSONVersionResponseBody struct {
 func NewCDiscountParser() CDiscountParser {
 	return CDiscountParser{
 		Name: "CDiscount",
-		URL: "https://www.cdiscount.com/jeux-pc-video-console/ps5/console-ps5/l-1035001.html#_his_",
-		shortURL: "https://cutt.ly/WjziXL5",
+		URL: "https://www.cdiscount.com/jeux-pc-video-console/ps5/console-ps5-blanche-white-standard-edition-plays/f-1035001-ps5standardwhi.html",
+		shortURL: "https://cutt.ly/ljDcHkY",
 	}
 }
 
@@ -64,11 +63,11 @@ func (p CDiscountParser) IsAvailable() (bool, error) {
 	defer cancel()
 
 	// run task list
-	var nodes []*cdp.Node
+	var res bool
 	if err := chromedp.Run(ctxt,
 		chromedp.Navigate(p.URL),
-		chromedp.WaitVisible(".prdBlocContainer"),
-		chromedp.Nodes(`.crUl>.crItem`, &nodes, chromedp.ByQuery),
+		chromedp.WaitReady("#footer"),
+		chromedp.Evaluate(`document.querySelector('.fpTMain') !== null`, &res),
 	); err != nil {
 		ctxt.Done()
 		allocatorContext.Done()
@@ -79,7 +78,7 @@ func (p CDiscountParser) IsAvailable() (bool, error) {
 	ctxt.Done()
 	allocatorContext.Done()
 
-	if len(nodes) != 1 {
+	if res {
 		return true, nil
 	}
 
