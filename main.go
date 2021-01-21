@@ -66,16 +66,19 @@ func main() {
 				go func(job Job) {
 					isAvailable, err := job.Parser.IsAvailable()
 
+					if err != nil {
+						fmt.Println(job.Parser.GetName(), err)
+					} else {
+						fmt.Printf("%s: %t\n", job.Parser.GetName(), isAvailable)
+					}
+
 					for _, mID := range messengerIDs {
 						if err != nil {
-							fmt.Println(job.Parser.GetName(), err)
 							m.SendSimpleMessage(mID, fmt.Sprintf("Impossible de verifier les stocks pour %s: %s", job.Parser.GetName(), err.Error()))
 				
 							return
 						}
-	
-						fmt.Printf("%s: %t\n", job.Parser.GetName(), isAvailable)
-	
+		
 						if isAvailable == true {
 							m.SendSimpleMessage(mID, fmt.Sprintf("Duuuude, PS5 dispo chez %s! 🏃‍♂️\n%s", job.Parser.GetName(), job.Parser.GetShortURL()))
 						}
@@ -126,5 +129,8 @@ func main() {
 		res.Write([]byte("{\"message\": \"ok\"}"))
 	})
 
-	http.ListenAndServe(":5646", nil)
+	port := config.GetServerPort()
+	fmt.Printf("Server is listening on port %d", port)
+
+	http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
 }

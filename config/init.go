@@ -14,11 +14,11 @@ func ReadFromEnvironment() error {
 	messengerAccessToken = os.Getenv("MESSENGER_ACCESS_TOKEN")
 	messengerVerifyToken = os.Getenv("MESSENGER_VERIFY_TOKEN")
 	fnacCookie = os.Getenv("COOKIE_FNAC")
-	cDiscountCookie = os.Getenv("CDISCOUNT_COOKIE")
 	messengerRecipientS := os.Getenv("MESSENGER_RECIPIENT_IDS")
 	chromeHost = os.Getenv("CHROME_HOST")
 	chromePort = os.Getenv("CHROME_PORT")
 	cronIntervalSecondsString := os.Getenv("CRON_INTERVAL_SECONDS")
+	serverPortS := os.Getenv("PORT")
 
 	messengerRecipientIDs = strings.Split(messengerRecipientS, ",")
 
@@ -52,6 +52,18 @@ func ReadFromEnvironment() error {
 		}
 	} else {
 		cronIntervalSeconds = 300
+	}
+
+	if serverPortS != "" {
+		serverPortParsed, err := strconv.Atoi(serverPortS)
+
+		if err != nil {
+			return err
+		}
+
+		serverPort = serverPortParsed
+	} else {
+		serverPort = 5646
 	}
 
 	return nil

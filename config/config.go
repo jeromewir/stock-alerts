@@ -4,11 +4,11 @@ var (
 	messengerAccessToken string
 	messengerVerifyToken string
 	fnacCookie string
-	cDiscountCookie string
 	messengerRecipientIDs []string
 	chromeHost string
 	chromePort string
 	cronIntervalSeconds int
+	serverPort int
 )
 
 // GetMessengerAccessToken returns the access token used to interact with messenger API
@@ -31,11 +31,6 @@ func GetMessengerRecipientIDs() []string {
 	return messengerRecipientIDs
 }
 
-// GetCDiscountCookie returns the cookie needed to access the page
-func GetCDiscountCookie() string {
-	return cDiscountCookie
-}
-
 // GetChromeHost returns the host for the headless browser
 func GetChromeHost() string {
 	return chromeHost
@@ -49,4 +44,9 @@ func GetChromePort() string {
 // GetCronIntervalSeconds returns the number, in minutes, when the scrapers should launch
 func GetCronIntervalSeconds() int {
 	return cronIntervalSeconds
+}
+
+// GetServerPort returns the HTTP port the server will be binded to
+func GetServerPort() int {
+	return serverPort
 }
