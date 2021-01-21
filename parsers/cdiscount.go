@@ -66,7 +66,7 @@ func (p CDiscountParser) IsAvailable() (bool, error) {
 	var res bool
 	if err := chromedp.Run(ctxt,
 		chromedp.Navigate(p.URL),
-		chromedp.WaitReady("#footer"),
+		chromedp.WaitReady(".ftBToTop"),
 		chromedp.Evaluate(`document.querySelector('.fpTMain') !== null`, &res),
 	); err != nil {
 		ctxt.Done()
